@@ -10,17 +10,17 @@ import java.time.LocalDateTime;
 @Table(name = "book_status")
 public class BookStatus {
     @Id
-    @Column(name = "book_id") // Указываем имя столбца
+    @Column(name = "book_id") 
     private Long bookId;
 
     @OneToOne
     @MapsId
-    @JoinColumn(name = "book_id") // Указываем имя столбца для связи
+    @JoinColumn(name = "book_id") 
     private Book book;
 
-    @Column(name = "borrowed_at") // Указываем имя столбца
+    @Column(name = "borrowed_at")
     private LocalDateTime borrowedAt;
 
-    @Column(name = "return_by") // Указываем имя столбца
+    @Column(name = "return_by") 
     private LocalDateTime returnBy;
 }
