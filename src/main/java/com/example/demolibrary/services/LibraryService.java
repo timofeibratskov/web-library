@@ -17,12 +17,11 @@ public class LibraryService {
         this.bookStatusRepository = bookStatusRepository;
     }
 
-    public BookStatus addBookStatus(BookStatus status) {
-        // Здесь вы можете добавить дополнительные проверки или логику, если необходимо
+    public BookStatus addBookStatus(BookStatus 
         return bookStatusRepository.save(status);
     }
 
     public Optional<BookStatus> getBookStatus(Long bookId) {
-        return bookStatusRepository.findByBookId(bookId); // Возвращает Optional<BookStatus>
+        return bookStatusRepository.findByBookId(bookId); 
     }
 }
