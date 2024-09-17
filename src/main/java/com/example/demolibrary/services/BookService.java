@@ -1,9 +1,12 @@
 package com.example.demolibrary.services;
 
+import com.example.demolibrary.dto.BookStatusDto;
 import com.example.demolibrary.dto.BookDto;
 import com.example.demolibrary.exceptions.ResourceNotFoundException;
 import com.example.demolibrary.models.Book;
+import com.example.demolibrary.models.BookStatus;
 import com.example.demolibrary.repositories.BookRepository;
+import com.example.demolibrary.repositories.BookStatusRepository;
 import jakarta.persistence.EntityExistsException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -19,11 +22,13 @@ import java.util.stream.Collectors;
 public class BookService {
     private final BookRepository bookRepository;
     private final ModelMapper modelMapper;
+    private final BookStatusRepository bookStatusRepository;
 
     @Autowired
-    public BookService(BookRepository bookRepository, ModelMapper modelMapper) {
+    public BookService(BookRepository bookRepository, ModelMapper modelMapper, BookStatusRepository bookStatusRepository) {
         this.bookRepository = bookRepository;
         this.modelMapper = modelMapper;
+        this.bookStatusRepository = bookStatusRepository;
     }
 
     @Transactional
@@ -50,9 +55,18 @@ public class BookService {
         if (bookRepository.findByIsbn(bookDto.getIsbn()).isPresent()) {
             throw new EntityExistsException("Книга с таким ISBN уже существует: " + bookDto.getIsbn());
         }
-
         Book book = modelMapper.map(bookDto, Book.class);
         Book savedBook = bookRepository.save(book);
+
+        // Создаем статус книги
+        BookStatus bookStatus = new BookStatus();
+        bookStatus.setBook(savedBook); // Устанавливаем связь с книгой
+        bookStatus.setBorrowedAt(null); // Инициализируем как null
+        bookStatus.setReturnBy(null); // Инициализируем как null
+
+        // Сохраняем статус книги
+        bookStatusRepository.save(bookStatus);
+
         log.info("Book added with ID: {}", savedBook.getId());
         return modelMapper.map(savedBook, BookDto.class);
     }
